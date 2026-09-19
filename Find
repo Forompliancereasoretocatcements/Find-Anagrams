@@ -1,0 +1,37 @@
+def find_anagrams(s, p):
+    if len(s) < len(p):
+        return []
+    window = {}
+    pdict = {}
+    for i in s:
+        window[i] = 0
+        pdict[i] = 0
+    for i in range(len(p)):
+        if p[i] not in s:
+            return []
+        pdict[p[i]] += 1
+        window[s[i]] += 1
+    a = 0
+    starts = []
+    for char in s[:len(p)]:
+        if window[char] == pdict[char]:
+            a -= 1
+        elif window[char] + 1 == pdict[char]:
+            a += 1
+        window[char] += 1
+    if a == len(p):
+        starts.append(0)
+    for i in range(len(s) - len(p)):
+        if window[s[i]] == pdict[s[i]]:
+            a -= 1
+        elif window[s[i]] - 1 == pdict[s[i]]:
+            a += 1
+        window[s[i]] -= 1
+        if window[s[i + len(p)]] == pdict[s[i + len(p)]]:
+            a -= 1
+        elif window[s[i + len(p)]] + 1 == pdict[s[i + len(p)]]:
+            a += 1
+        window[s[i + len(p)]] += 1
+        if a == len(p):
+            starts.append(i + 1)
+    return starts
