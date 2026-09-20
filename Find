@@ -13,13 +13,10 @@ def find_anagrams(s, p):
         window[s[i]] += 1
     a = 0
     starts = []
-    for char in s[:len(p)]:
+    for char in window:
         if window[char] == pdict[char]:
-            a -= 1
-        elif window[char] + 1 == pdict[char]:
             a += 1
-        window[char] += 1
-    if a == len(p):
+    if a == len(window):
         starts.append(0)
     for i in range(len(s) - len(p)):
         if window[s[i]] == pdict[s[i]]:
@@ -32,6 +29,16 @@ def find_anagrams(s, p):
         elif window[s[i + len(p)]] + 1 == pdict[s[i + len(p)]]:
             a += 1
         window[s[i + len(p)]] += 1
-        if a == len(p):
+        if a == len(window):
             starts.append(i + 1)
     return starts
+
+tests = [["cbaebabacd", "abc"],
+         ["abab", "ab"],
+         ["vcvkc", "cvv"],
+         ["y", "re"],
+         ["a", "k"],
+         ["tisktinselletsing", "letnis"]]
+
+for i in range(len(tests)):
+    print("Test " + str(i + 1) + ":", find_anagrams(tests[i][0], tests[i][1]))
