@@ -1,16 +1,16 @@
+import collections
+
 def find_anagrams(s, p):
     if len(s) < len(p):
         return []
-    window = {}
-    pdict = {}
+    window = collections.Counter(s[:len(p)])
+    pdict = collections.Counter(p)
+    if pdict > window:
+        return []
     for i in s:
-        window[i] = 0
-        pdict[i] = 0
-    for i in range(len(p)):
-        if p[i] not in s:
-            return []
-        pdict[p[i]] += 1
-        window[s[i]] += 1
+        window[s] = 0
+        pdict[s] = 0
+    print(window, pdict)
     a = 0
     starts = []
     for char in window:
@@ -19,12 +19,14 @@ def find_anagrams(s, p):
     if a == len(window):
         starts.append(0)
     for i in range(len(s) - len(p)):
+        if i == 6:
+            print(window, pdict, a)
         if window[s[i]] == pdict[s[i]]:
             a -= 1
         elif window[s[i]] - 1 == pdict[s[i]]:
             a += 1
         window[s[i]] -= 1
-        if window[s[i + len(p)]] == pdict[s[i + len(p)]]:
+        if  window[s[i + len(p)]] == pdict[s[i + len(p)]]:
             a -= 1
         elif window[s[i + len(p)]] + 1 == pdict[s[i + len(p)]]:
             a += 1
@@ -33,12 +35,14 @@ def find_anagrams(s, p):
             starts.append(i + 1)
     return starts
 
-tests = [["cbaebabacd", "abc"],
-         ["abab", "ab"],
-         ["vcvkc", "cvv"],
-         ["y", "re"],
-         ["a", "k"],
-         ["tisktinselletsing", "letnis"]]
+tests = [["cbaebabacd", "abc"], # [0, 6]
+         ["abab", "ab"], # [0, 1, 2]
+         ["vcvkc", "cvv"], # [0]
+         ["y", "re"], # []
+         ["a", "k"], # []
+         ["tisktinselletsing", "letnis"] # [4, 10]
+         ]
 
 for i in range(len(tests)):
     print("Test " + str(i + 1) + ":", find_anagrams(tests[i][0], tests[i][1]))
+    
