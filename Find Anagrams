@@ -10,7 +10,7 @@ def find_anagrams(s, p):
     for i in s:
         window[s] = 0
         pdict[s] = 0
-    print(window, pdict)
+    #print(window, pdict)
     a = 0
     starts = []
     for char in window:
@@ -19,8 +19,8 @@ def find_anagrams(s, p):
     if a == len(window):
         starts.append(0)
     for i in range(len(s) - len(p)):
-        if i == 6:
-            print(window, pdict, a)
+        #if i == 6:
+        #    print(window, pdict, a)
         if window[s[i]] == pdict[s[i]]:
             a -= 1
         elif window[s[i]] - 1 == pdict[s[i]]:
@@ -35,6 +35,41 @@ def find_anagrams(s, p):
             starts.append(i + 1)
     return starts
 
+def find_anagrams_with_improved_logic(s, p):
+    if len(s) < len(p):
+        return []
+    p_count = collections.Counter(p)
+    window_count = collections.Counter(s[:len(p)])
+    starts = []
+    matches = 0
+    for char in p_count:
+        if char in window_count and window_count[char] == p_count[char]:
+            matches += 1
+    if matches == len(p_count):
+        starts.append(0)
+    for i in range(len(p), len(s)):
+        char_in = s[i]
+        char_out = s[i - len(p)]
+        if char_in in p_count:
+            if window_count[char_in] == p_count[char_in]:
+                matches -= 1
+            window_count[char_in] += 1
+            if window_count[char_in] == p_count[char_in]:
+                matches += 1
+        else:
+            window_count[char_in] += 1
+        if char_out in p_count:
+            if window_count[char_out] == p_count[char_out]:
+                matches -= 1
+            window_count[char_out] -= 1
+            if window_count[char_out] == p_count[char_out]:
+                matches += 1
+        else:
+            window_count[char_out] -= 1
+        if matches == len(p_count):
+            starts.append(i - len(p) + 1)
+    return starts
+
 tests = [["cbaebabacd", "abc"], # [0, 6]
          ["abab", "ab"], # [0, 1, 2]
          ["vcvkc", "cvv"], # [0]
@@ -44,5 +79,4 @@ tests = [["cbaebabacd", "abc"], # [0, 6]
          ]
 
 for i in range(len(tests)):
-    print("Test " + str(i + 1) + ":", find_anagrams(tests[i][0], tests[i][1]))
-    
+    print("Test " + str(i + 1) + ":", find_anagrams_with_improved_logic(tests[i][0], tests[i][1]))
